@@ -1,10 +1,10 @@
 const { Pool } = require("pg");
 require("dotenv").config();
-
-const connectionString =
-  process.env.DATABASE_URL ||
-  "postgres://postgres:alone15@localhost:5432/atlas";
-
-const pool = new Pool({ connectionString });
-
+ 
+if (!process.env.DATABASE_URL) {
+  throw new Error("Falta la variable de entorno DATABASE_URL");
+}
+ 
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+ 
 module.exports = { pool };
