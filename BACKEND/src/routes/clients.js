@@ -117,7 +117,6 @@ router.get("/", async (req, res) => {
       });
     }
 
-    console.log("authUser", authUser.empresaId);
 
     const result = await pool.query(
       "SELECT * FROM clientes WHERE empresa_id = $1 ORDER BY id DESC",

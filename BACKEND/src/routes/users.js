@@ -29,7 +29,6 @@ router.post("/", validate(createUserSchema), async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const authUser = getUserFromAuthHeader(req);
-    console.log("authUser", authUser);
     if (!authUser || !authUser.empresaId) {
       return res.status(401).json({
         error: "No autorizado",
