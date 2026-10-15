@@ -32,6 +32,9 @@ echo "Verificando tablas creadas..."
 TABLE_COUNT=$(psql -t -A --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';")
 echo "Tablas creadas: $TABLE_COUNT"
 
+echo "Aplicando migracion de contrasenas (bcrypt)..."
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" -f /tmp/migracion-bcrypt.sql
+
 echo "========================================="
 echo "Base de datos inicializada correctamente."
 echo "========================================="

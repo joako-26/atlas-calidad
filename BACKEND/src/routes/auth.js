@@ -1,5 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const { pool } = require("../db");
 const validate = require("../middleware/validate");
 const { loginSchema } = require("../validations/auth");
@@ -17,7 +18,8 @@ router.post("/login", validate(loginSchema), async (req, res) => {
       return res.status(401).json({ error: "Credenciales inválidas" });
     }
     const user = result.rows[0];
-    if (user.contrasena_hash !== password) {
+    const passwordOk = await bcrypt.compare(password, user.contrasena_hash);
+if (!passwordOk) {
       return res.status(401).json({ error: "Credenciales inválidas" });
     }
 
