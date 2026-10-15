@@ -32,7 +32,7 @@ services:
       - PORT=4000
       - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@atlas-postgres-et:5432/${POSTGRES_DB:-atlas}
       - NODE_ENV=${NODE_ENV:-production}
-      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+      - JWT_SECRET=${JWT_SECRET:?Debe definir JWT_SECRET en el archivo .env}
       - FRONTEND_URL=http://localhost:${PORT_FRONTEND:-3351}
     ports:
       - "${PORT_BACKEND:-4451}:4000"

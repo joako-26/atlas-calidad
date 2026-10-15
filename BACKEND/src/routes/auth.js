@@ -4,7 +4,7 @@ const { pool } = require("../db");
 const validate = require("../middleware/validate");
 const { loginSchema } = require("../validations/auth");
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "inseguro";
+const { JWT_SECRET } = require("../config");
 
 router.post("/login", validate(loginSchema), async (req, res) => {
   const { nombre_usuario, password } = req.body;

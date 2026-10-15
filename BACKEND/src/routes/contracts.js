@@ -2,27 +2,18 @@ const path = require("path");
 const fs = require("fs");
 const express = require("express");
 const multer = require("multer");
-const jwt = require("jsonwebtoken");
+
 const crypto = require("crypto");
 const { pool } = require("../db");
 const validate = require("../middleware/validate");
 const { createContractSchema, updateContractSchema } = require("../validations/contracts");
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "inseguro";
+const { getUserFromAuthHeader } = require("../middleware/auth");
 const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB por archivo
 
-function getUserFromAuthHeader(req) {
-  const auth = req.headers.authorization || "";
-  if (!auth.startsWith("Bearer ")) return null;
-  try {
-    const token = auth.substring(7);
-    return jwt.verify(token, JWT_SECRET);
-  } catch {
-    return null;
-  }
-}
+
 
 router.post("/", upload.array("files", 10), validate(createContractSchema), async (req, res) => {
   const {

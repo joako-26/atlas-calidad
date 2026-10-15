@@ -1,19 +1,9 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const { pool } = require("../db");
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || "inseguro";
+const { getUserFromAuthHeader } = require("../middleware/auth");
 
-function getUserFromAuthHeader(req) {
-  const auth = req.headers.authorization || "";
-  if (!auth.startsWith("Bearer ")) return null;
-  try {
-    const token = auth.substring(7);
-    return jwt.verify(token, JWT_SECRET);
-  } catch {
-    return null;
-  }
-}
+
 
 function calcularDiasEntreFechas(fecha1, fecha2) {
   const date1 = new Date(fecha1);
