@@ -141,7 +141,7 @@ router.get("/", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener métricas",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });

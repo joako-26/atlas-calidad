@@ -69,7 +69,7 @@ router.post("/", validate(createEmpresaUsuarioSchema), async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al crear vínculo",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -109,7 +109,7 @@ router.get("/", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al listar usuarios",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -127,7 +127,7 @@ router.get("/:id", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener vínculo",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -156,7 +156,7 @@ router.put("/:id", validate(updateEmpresaUsuarioSchema), async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al actualizar vínculo",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -184,7 +184,7 @@ router.delete("/:id", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al eliminar vínculo",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });

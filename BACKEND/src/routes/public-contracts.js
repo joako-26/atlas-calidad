@@ -71,7 +71,7 @@ router.post("/:token/verify", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al verificar contraseña",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -131,7 +131,7 @@ router.get("/:token/files", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener archivos",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -202,7 +202,7 @@ router.get("/:token/file/:fileId", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener archivo",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });

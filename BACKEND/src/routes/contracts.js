@@ -59,7 +59,7 @@ router.post("/", upload.array("files", 10), validate(createContractSchema), asyn
     console.error(err);
     res.status(500).json({
       error: "Error al crear contrato",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -97,7 +97,7 @@ router.get("/", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al listar contratos",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -158,7 +158,7 @@ router.get("/estados", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener contratos por estado",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -246,7 +246,7 @@ router.get("/dashboard", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener estadísticas",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -264,7 +264,7 @@ router.get("/:id", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener contrato",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -386,7 +386,7 @@ router.put("/:id", upload.array("files", 10), validate(updateContractSchema), as
     console.error(err);
     res.status(500).json({
       error: "Error al actualizar contrato",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -403,7 +403,7 @@ router.get("/:id/files", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener archivos",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -426,7 +426,7 @@ router.get("/:id/file/:fileId", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener archivo",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -449,7 +449,7 @@ router.get("/:id/file", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener archivo",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -517,7 +517,7 @@ router.delete("/:id/file/:fileId", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al eliminar archivo",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -548,7 +548,7 @@ router.delete("/:id", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al eliminar contrato",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -624,7 +624,7 @@ router.post("/:id/share", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al generar enlace compartido",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -680,7 +680,7 @@ router.delete("/:id/share", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al desactivar enlace compartido",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });
@@ -731,7 +731,7 @@ router.get("/:id/share", async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "Error al obtener información de compartir",
-      glosa: err.message || err.toString(),
+      glosa: "Ocurrió un error interno",
     });
   }
 });

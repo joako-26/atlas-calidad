@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
       }
       return res.status(500).json({
         error: "Error en la validación",
-        glosa: error.message || error.toString(),
+        glosa: "Ocurrió un error interno",
       });
     }
     const { usuario, empresa } = req.body;
@@ -66,7 +66,7 @@ router.post("/", async (req, res) => {
         .status(500)
         .json({
           error: "Error al crear empresa con usuario",
-          glosa: err.message || err.toString(),
+          glosa: "Ocurrió un error interno",
         });
     }
   } else {
@@ -86,7 +86,7 @@ router.post("/", async (req, res) => {
       }
       return res.status(500).json({
         error: "Error en la validación",
-        glosa: error.message || error.toString(),
+        glosa: "Ocurrió un error interno",
       });
     }
     const { nombre, direccion = null, telefono = null, correo } = req.body;
@@ -112,7 +112,7 @@ router.post("/", async (req, res) => {
         .status(500)
         .json({
           error: "Error al crear empresa",
-          glosa: err.message || err.toString(),
+          glosa: "Ocurrió un error interno",
         });
     }
   }
@@ -128,7 +128,7 @@ router.get("/", async (req, res) => {
       .status(500)
       .json({
         error: "Error al listar empresas",
-        glosa: err.message || err.toString(),
+        glosa: "Ocurrió un error interno",
       });
   }
 });
@@ -147,7 +147,7 @@ router.get("/:id", async (req, res) => {
       .status(500)
       .json({
         error: "Error al obtener empresa",
-        glosa: err.message || err.toString(),
+        glosa: "Ocurrió un error interno",
       });
   }
 });
@@ -178,7 +178,7 @@ router.put("/:id", validate(updateEmpresaSchema), async (req, res) => {
       .status(500)
       .json({
         error: "Error al actualizar empresa",
-        glosa: err.message || err.toString(),
+        glosa: "Ocurrió un error interno",
       });
   }
 });
@@ -208,7 +208,7 @@ router.delete("/:id", async (req, res) => {
       .status(500)
       .json({
         error: "Error al eliminar empresa",
-        glosa: err.message || err.toString(),
+        glosa: "Ocurrió un error interno",
       });
   }
 });

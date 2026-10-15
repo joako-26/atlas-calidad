@@ -18,7 +18,7 @@ const validate = (schema, source = "body") => {
       }
       return res.status(500).json({
         error: "Error en la validación",
-        glosa: error.message || error.toString(),
+        glosa: "Ocurrió un error interno",
       });
     }
   };
