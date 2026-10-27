@@ -12,6 +12,14 @@ const { getUserFromAuthHeader } = require("../middleware/auth");
 router.post("/", validate(createUserSchema), async (req, res) => {
   const { nombre_usuario, contrasena_hash, correo } = req.body;
   try {
+    const authUser = getUserFromAuthHeader(req);
+    if (!authUser) {
+      return res.status(401).json({
+        error: "No autorizado",
+        glosa: "Debe iniciar sesión para crear usuarios",
+      });
+    }
+
     const result = await pool.query(
       "INSERT INTO usuarios (nombre_usuario, contrasena_hash, correo) VALUES ($1, $2, $3) RETURNING id, nombre_usuario, correo, created_at",
       [nombre_usuario, await bcrypt.hash(contrasena_hash, 10), correo]
@@ -24,6 +32,7 @@ router.post("/", validate(createUserSchema), async (req, res) => {
       glosa: "Ocurrió un error interno",
     });
   }
+  
 });
 
 router.get("/", async (req, res) => {
