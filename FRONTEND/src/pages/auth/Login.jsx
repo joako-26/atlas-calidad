@@ -107,7 +107,7 @@ export default function Login() {
               type="submit"
               disabled={loading}
               data-testid="button-login"
-              className="w-full text-white mt-4 py-3 text-lg font-semibold bg-secondary rounded-lg hover:bg-primary hover:shadow-lg hover:-translate-y-0.5 disabled:bg-gray-500 disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-300"
+              className="w-full text-white mt-4 py-3 text-lg font-semibold bg-primary rounded-lg hover:bg-teal-900 hover:shadow-lg hover:-translate-y-0.5 disabled:bg-gray-500 disabled:text-gray-400 disabled:cursor-not-allowed transition-all duration-300"
             >
               {loading ? "Ingresando..." : "Entrar"}
             </button>
