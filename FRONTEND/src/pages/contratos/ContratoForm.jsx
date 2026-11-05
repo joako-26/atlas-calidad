@@ -108,7 +108,7 @@ export default function ContratoForm() {
   });
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       try {
         const { data } = await api.get("/clientes");
         setClientes(data || []);
@@ -120,7 +120,7 @@ export default function ContratoForm() {
 
   useEffect(() => {
     if (!isEdit) return;
-    (async () => {
+    void (async () => {
       try {
         const { data } = await api.get(`/contratos/${id}`);
 
@@ -136,7 +136,7 @@ export default function ContratoForm() {
           }
           // Si viene como objeto Date o string con formato diferente, convertirlo
           const date = new Date(dateString);
-          if (isNaN(date.getTime())) return "";
+          if (Number.isNaN(date.getTime())) return "";
           const year = date.getFullYear();
           const month = String(date.getMonth() + 1).padStart(2, "0");
           const day = String(date.getDate()).padStart(2, "0");
@@ -343,8 +343,10 @@ export default function ContratoForm() {
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(shareUrl);
-    toast.success("Enlace copiado al portapapeles");
+    void navigator.clipboard
+      .writeText(shareUrl)
+      .then(() => toast.success("Enlace copiado al portapapeles"))
+      .catch(() => toast.error("No se pudo copiar el enlace"));
   };
 
   const visibleExistingFiles = existingFiles.filter(
@@ -661,7 +663,7 @@ export default function ContratoForm() {
                     {/* Archivos nuevos */}
                     {files.map((file, index) => (
                       <Paper
-                        key={`new-${index}`}
+                        key={`${file.name}-${file.lastModified}-${file.size}`}
                         sx={{
                           p: 1.5,
                           display: "flex",

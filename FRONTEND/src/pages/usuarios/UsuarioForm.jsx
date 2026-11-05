@@ -84,7 +84,7 @@ export default function UsuarioForm() {
 
   useEffect(() => {
     if (!id) return;
-    (async () => {
+    void (async () => {
       try {
         // Cargar roles disponibles
         const rolesResponse = await api.get("/roles");

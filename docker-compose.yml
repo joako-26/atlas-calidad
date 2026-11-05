@@ -55,7 +55,7 @@ services:
     container_name: atlas-frontend-et
     hostname: atlas-web
     ports:
-      - "${PORT_FRONTEND:-3351}:80"
+      - "${PORT_FRONTEND:-3351}:8080"
     depends_on:
       - atlas-backend-et
     networks:
@@ -69,4 +69,3 @@ networks:
   atlas-network:
     driver: bridge
     name: atlas-network
-

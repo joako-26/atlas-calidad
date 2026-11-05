@@ -52,16 +52,16 @@ api.interceptors.response.use(
       const { data } = error.response;
 
       // Si el error tiene el formato esperado { error, glosa }
-      if (data && data.error && data.glosa) {
+      if (data?.error && data?.glosa) {
         // Mostrar toast con título y descripción
         toast.error(data.error, {
           description: data.glosa,
           duration: 5000,
         });
-      } else if (data && data.error) {
+      } else if (data?.error) {
         // Si solo hay error sin glosa
         toast.error(data.error);
-      } else if (data && data.message) {
+      } else if (data?.message) {
         // Si hay un mensaje genérico
         toast.error(data.message);
       } else {

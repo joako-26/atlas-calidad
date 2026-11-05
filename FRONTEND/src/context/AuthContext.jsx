@@ -49,7 +49,7 @@ export default function AuthProvider({ children }) {
       // Crear objeto user con nombre_usuario y todo el contenido descifrado del token
       const userData = {
         nombre_usuario,
-        ...(decodedToken || {}),
+        ...decodedToken,
       };
 
       setUser(userData);

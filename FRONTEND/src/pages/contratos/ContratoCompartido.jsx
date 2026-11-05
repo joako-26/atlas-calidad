@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -21,7 +21,6 @@ import { toast } from "sonner";
 
 export default function ContratoCompartido() {
   const { token } = useParams();
-  const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4451";
 
   const [password, setPassword] = useState("");

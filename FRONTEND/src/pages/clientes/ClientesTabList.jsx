@@ -24,7 +24,112 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
-export default function ClientesTabList({ items, onDelete, onLoad, loading = false }) {
+const ClienteNombreCell = ({ row }) => (
+  <Stack direction="row" spacing={1.5} alignItems="center">
+    <Avatar
+      sx={{
+        bgcolor: "primary.main",
+        width: 32,
+        height: 32,
+        fontSize: "0.875rem",
+        color: "white",
+      }}
+    >
+      {row.original.nombre?.charAt(0)?.toUpperCase() || "C"}
+    </Avatar>
+    <Typography variant="body1" sx={{ fontWeight: 500, fontSize: "0.9rem" }}>
+      {row.original.nombre}
+    </Typography>
+  </Stack>
+);
+
+const ClienteCorreoCell = ({ row }) => (
+  <Stack direction="row" spacing={1} alignItems="center">
+    <EmailIcon fontSize="small" color="action" />
+    <Typography variant="body2" color="text.secondary">
+      {row.original.correo}
+    </Typography>
+  </Stack>
+);
+
+const ClienteTelefonoCell = ({ row }) => (
+  <Stack direction="row" spacing={1} alignItems="center">
+    <PhoneIcon fontSize="small" color="action" />
+    <Typography variant="body2" color="text.secondary">
+      {row.original.telefono}
+    </Typography>
+  </Stack>
+);
+
+const ClienteDireccionCell = ({ row }) => {
+  const direccionCompleta = [
+    row.original.direccion_calle,
+    row.original.direccion_numero,
+    row.original.direccion_ciudad,
+    row.original.direccion_region,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  return (
+    <Stack direction="row" spacing={1} alignItems="center">
+      <LocationOnIcon fontSize="small" color="action" />
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{
+          maxWidth: 300,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+        title={direccionCompleta}
+      >
+        {direccionCompleta || "Sin dirección"}
+      </Typography>
+    </Stack>
+  );
+};
+
+const ClienteAccionesCell = ({ row, table }) => {
+  const { role, navigate, handleDeleteClick } = table.options.meta;
+
+  return (
+    <Stack direction="row" spacing={1} justifyContent="flex-end">
+      <IconButton
+        color="primary"
+        size="small"
+        data-testid={`button-cliente-editar-${row.original.id}`}
+        onClick={() => navigate(`/clientes/${row.original.id}/editar`)}
+        sx={{
+          "&:hover": {
+            backgroundColor: "rgba(102, 126, 234, 0.1)",
+          },
+        }}
+      >
+        <EditIcon />
+      </IconButton>
+      {role === "administrador" && (
+        <IconButton
+          color="error"
+          size="small"
+          data-testid={`button-cliente-eliminar-${row.original.id}`}
+          onClick={() =>
+            handleDeleteClick(row.original.id, row.original.nombre)
+          }
+          sx={{
+            "&:hover": {
+              backgroundColor: "rgba(211, 47, 47, 0.1)",
+            },
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
+      )}
+    </Stack>
+  );
+};
+
+export default function ClientesTabList({ items, onDelete, loading = false }) {
   const { role } = useAuth();
   const navigate = useNavigate();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -55,86 +160,25 @@ export default function ClientesTabList({ items, onDelete, onLoad, loading = fal
         accessorKey: "nombre",
         header: "Nombre",
         size: 200,
-        Cell: ({ row }) => (
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <Avatar
-              sx={{
-                bgcolor: "primary.main",
-                width: 32,
-                height: 32,
-                fontSize: "0.875rem",
-                color: "white",
-              }}
-            >
-              {row.original.nombre?.charAt(0)?.toUpperCase() || "C"}
-            </Avatar>
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: 500, fontSize: "0.9rem" }}
-            >
-              {row.original.nombre}
-            </Typography>
-          </Stack>
-        ),
+        Cell: ClienteNombreCell,
       },
       {
         accessorKey: "correo",
         header: "Correo",
         size: 250,
-        Cell: ({ row }) => (
-          <Stack direction="row" spacing={1} alignItems="center">
-            <EmailIcon fontSize="small" color="action" />
-            <Typography variant="body2" color="text.secondary">
-              {row.original.correo}
-            </Typography>
-          </Stack>
-        ),
+        Cell: ClienteCorreoCell,
       },
       {
         accessorKey: "telefono",
         header: "Teléfono",
         size: 150,
-        Cell: ({ row }) => (
-          <Stack direction="row" spacing={1} alignItems="center">
-            <PhoneIcon fontSize="small" color="action" />
-            <Typography variant="body2" color="text.secondary">
-              {row.original.telefono}
-            </Typography>
-          </Stack>
-        ),
+        Cell: ClienteTelefonoCell,
       },
       {
         accessorKey: "direccion",
         header: "Dirección",
         size: 300,
-        Cell: ({ row }) => {
-          const direccionParts = [
-            row.original.direccion_calle,
-            row.original.direccion_numero,
-            row.original.direccion_ciudad,
-            row.original.direccion_region,
-          ].filter(Boolean); // Filtra valores vacíos, null o undefined
-          
-          const direccionCompleta = direccionParts.join(", ");
-          
-          return (
-            <Stack direction="row" spacing={1} alignItems="center">
-              <LocationOnIcon fontSize="small" color="action" />
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{
-                  maxWidth: 300,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-                title={direccionCompleta}
-              >
-                {direccionCompleta || "Sin dirección"}
-              </Typography>
-            </Stack>
-          );
-        },
+        Cell: ClienteDireccionCell,
       },
       {
         id: "acciones",
@@ -143,45 +187,10 @@ export default function ClientesTabList({ items, onDelete, onLoad, loading = fal
         enableColumnFilter: false,
         enableSorting: false,
         enableColumnActions: false,
-        Cell: ({ row }) => (
-          <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <IconButton
-              color="primary"
-              size="small"
-              data-testid={`button-cliente-editar-${row.original.id}`}
-              onClick={() =>
-                navigate(`/clientes/${row.original.id}/editar`)
-              }
-              sx={{
-                "&:hover": {
-                  backgroundColor: "rgba(102, 126, 234, 0.1)",
-                },
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-            {role === "administrador" && (
-              <IconButton
-                color="error"
-                size="small"
-                data-testid={`button-cliente-eliminar-${row.original.id}`}
-                onClick={() =>
-                  handleDeleteClick(row.original.id, row.original.nombre)
-                }
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "rgba(211, 47, 47, 0.1)",
-                  },
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
-            )}
-          </Stack>
-        ),
+        Cell: ClienteAccionesCell,
       },
     ],
-    [role, navigate, handleDeleteClick]
+    []
   );
 
   return (
@@ -223,6 +232,7 @@ export default function ClientesTabList({ items, onDelete, onLoad, loading = fal
       <MaterialReactTable
         columns={columns}
         data={items}
+        meta={{ role, navigate, handleDeleteClick }}
         enableColumnResizing={false}
         enablePagination
         enableBottomToolbar

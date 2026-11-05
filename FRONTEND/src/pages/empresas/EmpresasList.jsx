@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { api } from '../../lib/api'
 import { 
   Button, 
@@ -36,18 +36,29 @@ export default function EmpresasList() {
   const navigate = useNavigate()
   const [form, setForm] = useState({ nombre: '', direccion: '', telefono: '', correo: '' })
 
-  const load = async () => {
-    const { data } = await api.get('/empresas')
-    setItems(data || [])
-  }
-  useEffect(() => { load() }, []) // eslint-disable-line
+  const load = useCallback(async () => {
+    try {
+      const { data } = await api.get('/empresas')
+      setItems(data || [])
+    } catch (error) {
+      toast.error(error.response?.data?.glosa || 'Error al cargar empresas')
+    }
+  }, [])
+
+  useEffect(() => {
+    void load()
+  }, [load])
 
   const onCreate = async () => {
     if (role !== 'administrador') return
-    await api.post('/empresas', form)
-    toast.success('Empresa creada')
-    setForm({ nombre: '', direccion: '', telefono: '', correo: '' })
-    load()
+    try {
+      await api.post('/empresas', form)
+      toast.success('Empresa creada')
+      setForm({ nombre: '', direccion: '', telefono: '', correo: '' })
+      void load()
+    } catch (error) {
+      toast.error(error.response?.data?.glosa || 'Error al crear empresa')
+    }
   }
 
   return (

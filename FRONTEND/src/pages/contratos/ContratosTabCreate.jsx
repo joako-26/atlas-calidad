@@ -40,7 +40,7 @@ export default function ContratosTabCreate({ onSuccess, onLoad }) {
   const [previewFileName, setPreviewFileName] = useState("");
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       try {
         const { data } = await api.get("/clientes");
         setClientes(data || []);
@@ -291,7 +291,7 @@ export default function ContratosTabCreate({ onSuccess, onLoad }) {
               <Stack spacing={1}>
                 {files.map((file, index) => (
                   <Paper
-                    key={`new-${index}`}
+                    key={`${file.name}-${file.lastModified}-${file.size}`}
                     sx={{
                       p: 1.5,
                       display: "flex",

@@ -15,14 +15,12 @@ import {
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { api } from "../../lib/api";
 import { toast } from "sonner";
-import { useAuth } from "../../hooks/useAuth";
 import { useFormik } from "formik";
 import { clienteSchema } from "../../validations/clients";
 import { cargosRepresentante, regionesDeChile, bancosChile, giros } from "../../lib/utils";
 import { formatRut, RutFormat } from "@fdograph/rut-utilities";
 
 export default function ClientesTabCreate({ onSuccess, onLoad }) {
-  const { role } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
@@ -436,7 +434,7 @@ export default function ClientesTabCreate({ onSuccess, onLoad }) {
               value={formik.values.dia_pago}
               onChange={(e) => {
                 const value = e.target.value;
-                if (value === "" || (parseInt(value, 10) >= 1 && parseInt(value, 10) <= 31)) {
+                if (value === "" || (Number.parseInt(value, 10) >= 1 && Number.parseInt(value, 10) <= 31)) {
                   formik.handleChange(e);
                 }
               }}
@@ -537,4 +535,3 @@ export default function ClientesTabCreate({ onSuccess, onLoad }) {
     </CardContent>
   );
 }
-

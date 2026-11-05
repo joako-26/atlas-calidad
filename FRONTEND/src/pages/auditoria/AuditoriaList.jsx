@@ -11,6 +11,26 @@ import { MRT_Localization_ES } from "material-react-table/locales/es";
 import HistoryIcon from "@mui/icons-material/History";
 import EventIcon from "@mui/icons-material/Event";
 
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return new Date(dateString).toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const AuditoriaFechaCell = ({ row }) => (
+  <Stack direction="row" spacing={1} alignItems="center">
+    <EventIcon fontSize="small" color="action" />
+    <Typography variant="body2" color="text.secondary">
+      {formatDate(row.original.fecha_hora || row.original.fecha)}
+    </Typography>
+  </Stack>
+);
+
 export default function AuditoriaList() {
   const [items, setItems] = useState([]);
 
@@ -22,18 +42,6 @@ export default function AuditoriaList() {
   useEffect(() => {
     load();
   }, [load]);
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
 
   // Definir las columnas de la tabla
   const columns = useMemo(
@@ -58,14 +66,7 @@ export default function AuditoriaList() {
         accessorKey: "fecha_hora",
         header: "Fecha y Hora",
         size: 250,
-        Cell: ({ row }) => (
-          <Stack direction="row" spacing={1} alignItems="center">
-            <EventIcon fontSize="small" color="action" />
-            <Typography variant="body2" color="text.secondary">
-              {formatDate(row.original.fecha_hora || row.original.fecha)}
-            </Typography>
-          </Stack>
-        ),
+        Cell: AuditoriaFechaCell,
       },
     ],
     []

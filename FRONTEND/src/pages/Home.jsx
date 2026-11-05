@@ -74,7 +74,7 @@ export default function Home() {
       }
     };
 
-    fetchMetricas();
+    void fetchMetricas();
   }, []);
 
   const handleTabChange = (event, newValue) => {

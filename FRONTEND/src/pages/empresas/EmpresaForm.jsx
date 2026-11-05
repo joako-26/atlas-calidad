@@ -38,7 +38,7 @@ export default function EmpresaForm() {
       try {
         await api.put(`/empresas/${id}`, values)
         toast.success('Información de la empresa actualizada')
-      } catch (error) {
+      } catch {
         // El error ya se maneja en el interceptor
       } finally {
         setLoading(false)
@@ -46,9 +46,14 @@ export default function EmpresaForm() {
     },
   })
 
+  const { setValues } = formik
+
   useEffect(() => {
-    if (!id) return
-    ;(async () => {
+    if (!id) {
+      return
+    }
+
+    const loadEmpresa = async () => {
       try {
         const { data } = await api.get(`/empresas/${id}`)
         const empresaData = {
@@ -57,12 +62,14 @@ export default function EmpresaForm() {
           telefono: data.telefono || '',
           correo: data.correo || ''
         }
-        formik.setValues(empresaData)
-      } catch (error) {
+        setValues(empresaData)
+      } catch {
         toast.error('Error al cargar empresa')
       }
-    })()
-  }, [id])
+    }
+
+    void loadEmpresa()
+  }, [id, setValues])
 
   return (
     <Stack spacing={3}>
@@ -223,4 +230,3 @@ export default function EmpresaForm() {
     </Stack>
   )
 }
-

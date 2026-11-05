@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../lib/api";
 import {
@@ -40,16 +40,16 @@ export default function ContratoDetalle() {
   const navigate = useNavigate();
   const { role } = useAuth();
 
-  const load = async () => {
+  const load = useCallback(async () => {
     try {
       const { data } = await api.get(`/contratos/${id}`);
       setItem(data);
     } catch {
       toast.error("Error al cargar contrato");
     }
-  };
+  }, [id]);
 
-  const loadFiles = async () => {
+  const loadFiles = useCallback(async () => {
     try {
       const { data } = await api.get(`/contratos/${id}/files`);
       setFiles(data || []);
@@ -57,9 +57,9 @@ export default function ContratoDetalle() {
       // Si no hay archivos, no es un error crítico
       setFiles([]);
     }
-  };
+  }, [id]);
 
-  const loadShareInfo = async () => {
+  const loadShareInfo = useCallback(async () => {
     try {
       const { data } = await api.get(`/contratos/${id}/share`);
       setShareInfo(data);
@@ -70,13 +70,13 @@ export default function ContratoDetalle() {
       // Si no hay información de compartir, no es un error crítico
       setShareInfo(null);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
-    load();
-    loadFiles();
-    loadShareInfo();
-  }, [id]); // eslint-disable-line
+    void load();
+    void loadFiles();
+    void loadShareInfo();
+  }, [load, loadFiles, loadShareInfo]);
 
   const onDelete = async () => {
     if (role !== "administrador") return;
@@ -102,7 +102,7 @@ export default function ContratoDetalle() {
       setLoading(true);
       await api.delete(`/contratos/${id}/file/${fileId}`);
       toast.success("Archivo eliminado");
-      loadFiles();
+      void loadFiles();
     } catch {
       toast.error("Error al eliminar archivo");
     } finally {
@@ -157,8 +157,10 @@ export default function ContratoDetalle() {
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(shareUrl);
-    toast.success("Enlace copiado al portapapeles");
+    void navigator.clipboard
+      .writeText(shareUrl)
+      .then(() => toast.success("Enlace copiado al portapapeles"))
+      .catch(() => toast.error("No se pudo copiar el enlace"));
   };
 
   if (!item) return null;

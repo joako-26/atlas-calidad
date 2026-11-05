@@ -3,9 +3,7 @@ import {
   Button,
   Card,
   CardContent,
-  FormControlLabel,
   Stack,
-  Switch,
   TextField,
   Typography,
   Divider,
@@ -67,7 +65,6 @@ export default function ClienteForm() {
     validationSchema: clienteSchema,
     enableReinitialize: true,
     onSubmit: async (values) => {
-      console.log(values);
       setLoading(true);
       try {
         if (isEdit) {
@@ -88,7 +85,7 @@ export default function ClienteForm() {
 
   useEffect(() => {
     if (!isEdit) return;
-    (async () => {
+    void (async () => {
       try {
         const { data } = await api.get(`/clientes/${id}`);
         const formData = {
@@ -530,7 +527,7 @@ export default function ClienteForm() {
                   value={formik.values.dia_pago}
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (value === "" || (parseInt(value, 10) >= 1 && parseInt(value, 10) <= 31)) {
+                    if (value === "" || (Number.parseInt(value, 10) >= 1 && Number.parseInt(value, 10) <= 31)) {
                       formik.handleChange(e);
                     }
                   }}

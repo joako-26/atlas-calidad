@@ -5,7 +5,6 @@ import {
   Typography,
   Avatar,
   Chip,
-  Link as MLink,
   IconButton,
   Dialog,
   DialogTitle,
@@ -20,19 +19,136 @@ import { MaterialReactTable } from "material-react-table";
 import { MRT_Localization_ES } from "material-react-table/locales/es";
 import { useNavigate } from "react-router-dom";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAuth } from "../../hooks/useAuth";
 
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return new Date(dateString).toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+const getStatusColor = (fechaFin) => {
+  if (!fechaFin) return "default";
+  const diasRestantes = Math.ceil(
+    (new Date(fechaFin) - new Date()) / (1000 * 60 * 60 * 24)
+  );
+
+  if (diasRestantes < 0) return "error";
+  if (diasRestantes <= 7) return "warning";
+  if (diasRestantes <= 30) return "info";
+  return "success";
+};
+
+const getStatusLabel = (fechaFin) => {
+  if (!fechaFin) return "Sin fecha";
+  const diasRestantes = Math.ceil(
+    (new Date(fechaFin) - new Date()) / (1000 * 60 * 60 * 24)
+  );
+
+  if (diasRestantes < 0) return `Vencido (${Math.abs(diasRestantes)} días)`;
+  if (diasRestantes === 0) return "Vence hoy";
+  if (diasRestantes <= 30) return `Vence en ${diasRestantes} días`;
+  return "Vigente";
+};
+
+const ContratoTituloCell = ({ row }) => (
+  <Stack direction="row" spacing={1.5} alignItems="center">
+    <Avatar
+      sx={{
+        bgcolor: "primary.main",
+        width: 32,
+        height: 32,
+        fontSize: "0.875rem",
+        color: "white",
+      }}
+    >
+      {row.original.titulo?.charAt(0)?.toUpperCase() || "C"}
+    </Avatar>
+    <Typography variant="body1" sx={{ fontWeight: 500, fontSize: "0.9rem" }}>
+      {row.original.titulo}
+    </Typography>
+  </Stack>
+);
+
+const ContratoFechaInicioCell = ({ row }) => (
+  <Stack direction="row" spacing={1} alignItems="center">
+    <CalendarTodayIcon fontSize="small" color="action" />
+    <Typography variant="body2" color="text.secondary">
+      {formatDate(row.original.fecha_inicio)}
+    </Typography>
+  </Stack>
+);
+
+const ContratoFechaFinCell = ({ row }) => (
+  <Stack direction="row" spacing={1} alignItems="center">
+    <CalendarTodayIcon fontSize="small" color="action" />
+    <Typography variant="body2" color="text.secondary">
+      {formatDate(row.original.fecha_fin)}
+    </Typography>
+  </Stack>
+);
+
+const ContratoEstadoCell = ({ row }) => (
+  <Chip
+    label={getStatusLabel(row.original.fecha_fin)}
+    size="small"
+    color={getStatusColor(row.original.fecha_fin)}
+  />
+);
+
+const ContratoAccionesCell = ({ row, table }) => {
+  const { role, navigate, handleDeleteClick } = table.options.meta;
+
+  return (
+    <Stack direction="row" spacing={1} justifyContent="flex-end">
+      <IconButton
+        color="primary"
+        size="small"
+        data-testid={`button-contrato-editar-${row.original.id}`}
+        onClick={(event) => {
+          event.stopPropagation();
+          navigate(`/contratos/${row.original.id}/editar`);
+        }}
+        sx={{
+          "&:hover": {
+            backgroundColor: "rgba(102, 126, 234, 0.1)",
+          },
+        }}
+      >
+        <EditIcon />
+      </IconButton>
+      {role === "administrador" && (
+        <IconButton
+          color="error"
+          size="small"
+          data-testid={`button-contrato-eliminar-${row.original.id}`}
+          onClick={(event) => {
+            event.stopPropagation();
+            handleDeleteClick(row.original.id, row.original.titulo);
+          }}
+          sx={{
+            "&:hover": {
+              backgroundColor: "rgba(211, 47, 47, 0.1)",
+            },
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
+      )}
+    </Stack>
+  );
+};
+
 export default function ContratosTabList({
   items,
   onDelete,
-  onLoad,
   loading = false,
 }) {
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4451";
   const navigate = useNavigate();
   const { role } = useAuth();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -56,41 +172,6 @@ export default function ContratosTabList({
     setContratoToDelete(null);
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  const getStatusColor = (fechaFin) => {
-    if (!fechaFin) return "default";
-    const fin = new Date(fechaFin);
-    const hoy = new Date();
-    const diasRestantes = Math.ceil((fin - hoy) / (1000 * 60 * 60 * 24));
-
-    if (diasRestantes < 0) return "error";
-    if (diasRestantes <= 7) return "warning";
-    if (diasRestantes <= 30) return "info";
-    return "success";
-  };
-
-  const getStatusLabel = (fechaFin) => {
-    if (!fechaFin) return "Sin fecha";
-    const fin = new Date(fechaFin);
-    const hoy = new Date();
-    const diasRestantes = Math.ceil((fin - hoy) / (1000 * 60 * 60 * 24));
-
-    if (diasRestantes < 0) return `Vencido (${Math.abs(diasRestantes)} días)`;
-    if (diasRestantes === 0) return "Vence hoy";
-    if (diasRestantes <= 7) return `Vence en ${diasRestantes} días`;
-    if (diasRestantes <= 30) return `Vence en ${diasRestantes} días`;
-    return "Vigente";
-  };
-
   // Definir las columnas de la tabla
   const columns = useMemo(
     () => [
@@ -98,27 +179,7 @@ export default function ContratosTabList({
         accessorKey: "titulo",
         header: "Título",
         size: 250,
-        Cell: ({ row }) => (
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <Avatar
-              sx={{
-                bgcolor: "primary.main",
-                width: 32,
-                height: 32,
-                fontSize: "0.875rem",
-                color: "white",
-              }}
-            >
-              {row.original.titulo?.charAt(0)?.toUpperCase() || "C"}
-            </Avatar>
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: 500, fontSize: "0.9rem" }}
-            >
-              {row.original.titulo}
-            </Typography>
-          </Stack>
-        ),
+        Cell: ContratoTituloCell,
       },
       {
         accessorKey: "cliente_nombre",
@@ -129,39 +190,19 @@ export default function ContratosTabList({
         accessorKey: "fecha_inicio",
         header: "Inicio",
         size: 150,
-        Cell: ({ row }) => (
-          <Stack direction="row" spacing={1} alignItems="center">
-            <CalendarTodayIcon fontSize="small" color="action" />
-            <Typography variant="body2" color="text.secondary">
-              {formatDate(row.original.fecha_inicio)}
-            </Typography>
-          </Stack>
-        ),
+        Cell: ContratoFechaInicioCell,
       },
       {
         accessorKey: "fecha_fin",
         header: "Fin",
         size: 150,
-        Cell: ({ row }) => (
-          <Stack direction="row" spacing={1} alignItems="center">
-            <CalendarTodayIcon fontSize="small" color="action" />
-            <Typography variant="body2" color="text.secondary">
-              {formatDate(row.original.fecha_fin)}
-            </Typography>
-          </Stack>
-        ),
+        Cell: ContratoFechaFinCell,
       },
       {
         accessorKey: "estado",
         header: "Estado",
         size: 180,
-        Cell: ({ row }) => (
-          <Chip
-            label={getStatusLabel(row.original.fecha_fin)}
-            size="small"
-            color={getStatusColor(row.original.fecha_fin)}
-          />
-        ),
+        Cell: ContratoEstadoCell,
       },
       {
         id: "acciones",
@@ -170,47 +211,10 @@ export default function ContratosTabList({
         enableColumnFilter: false,
         enableSorting: false,
         enableColumnActions: false,
-        Cell: ({ row }) => (
-          <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <IconButton
-              color="primary"
-              size="small"
-              data-testid={`button-contrato-editar-${row.original.id}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/contratos/${row.original.id}/editar`);
-              }}
-              sx={{
-                "&:hover": {
-                  backgroundColor: "rgba(102, 126, 234, 0.1)",
-                },
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-            {role === "administrador" && (
-              <IconButton
-                color="error"
-                size="small"
-                data-testid={`button-contrato-eliminar-${row.original.id}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteClick(row.original.id, row.original.titulo);
-                }}
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "rgba(211, 47, 47, 0.1)",
-                  },
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
-            )}
-          </Stack>
-        ),
+        Cell: ContratoAccionesCell,
       },
     ],
-    [role, navigate, handleDeleteClick]
+    []
   );
 
   return (
@@ -252,6 +256,7 @@ export default function ContratosTabList({
       <MaterialReactTable
         columns={columns}
         data={items}
+        meta={{ role, navigate, handleDeleteClick }}
         enableColumnResizing={false}
         enablePagination
         enableBottomToolbar

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   IconButton,
   Stack,
@@ -19,16 +19,99 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
+const UsuarioNombreCell = ({ row }) => (
+  <Stack direction="row" spacing={1.5} alignItems="center">
+    <Avatar
+      sx={{
+        bgcolor: "primary.main",
+        width: 32,
+        height: 32,
+        fontSize: "0.875rem",
+        color: "white",
+      }}
+    >
+      {row.original.nombre_usuario?.charAt(0)?.toUpperCase() || "U"}
+    </Avatar>
+    <Typography variant="body1" sx={{ fontWeight: 500, fontSize: "0.9rem" }}>
+      {row.original.nombre_usuario}
+    </Typography>
+  </Stack>
+);
+
+const UsuarioRolCell = ({ row }) => (
+  <Typography variant="body">
+    {row.original.rol || row.original.rol_nombre || "N/A"}
+  </Typography>
+);
+
+const UsuarioCreacionCell = ({ row }) => (
+  <Typography variant="body">{row.original.created_at || "N/A"}</Typography>
+);
+
+const UsuarioAccionesCell = ({ row, table }) => {
+  const { role, user, navigate, handleDeleteClick } = table.options.meta;
+  const puedeEditar =
+    role === "administrador" ||
+    (role === "editor" &&
+      user?.usuarioId &&
+      Number(user.usuarioId) === Number(row.original.id));
+
+  return (
+    <Stack direction="row" spacing={1} justifyContent="flex-end">
+      {puedeEditar && (
+        <IconButton
+          color="primary"
+          size="small"
+          data-testid={`button-usuario-editar-${row.original.id}`}
+          onClick={() => navigate(`/usuarios/${row.original.id}/editar`)}
+          sx={{
+            "&:hover": {
+              backgroundColor: "rgba(102, 126, 234, 0.1)",
+            },
+          }}
+        >
+          <EditIcon />
+        </IconButton>
+      )}
+      {role === "administrador" && (
+        <IconButton
+          color="error"
+          size="small"
+          data-testid={`button-usuario-eliminar-${row.original.id}`}
+          onClick={() =>
+            handleDeleteClick(
+              row.original.id,
+              row.original.nombre_usuario
+            )
+          }
+          sx={{
+            "&:hover": {
+              backgroundColor: "rgba(211, 47, 47, 0.1)",
+            },
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
+      )}
+      {!puedeEditar && role !== "administrador" && (
+        <Typography variant="body2" color="text.secondary">
+          Solo lectura
+        </Typography>
+      )}
+    </Stack>
+  );
+};
+
 export default function UsuariosTabList({ items, onDelete }) {
   const { role, user } = useAuth();
   const navigate = useNavigate();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
-  const handleDeleteClick = (id, nombreUsuario) => {
+  const handleDeleteClick = useCallback((id, nombreUsuario) => {
     setUserToDelete({ id, nombreUsuario });
     setOpenDeleteDialog(true);
-  };
+  }, []);
 
   const handleDeleteConfirm = () => {
     if (userToDelete) {
@@ -50,27 +133,7 @@ export default function UsuariosTabList({ items, onDelete }) {
         accessorKey: "nombre_usuario",
         header: "Usuario",
         size: 200,
-        Cell: ({ row }) => (
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <Avatar
-              sx={{
-                bgcolor: "primary.main",
-                width: 32,
-                height: 32,
-                fontSize: "0.875rem",
-                color: "white",
-              }}
-            >
-              {row.original.nombre_usuario?.charAt(0)?.toUpperCase() || "U"}
-            </Avatar>
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: 500, fontSize: "0.9rem" }}
-            >
-              {row.original.nombre_usuario}
-            </Typography>
-          </Stack>
-        ),
+        Cell: UsuarioNombreCell,
       },
       {
         accessorKey: "correo",
@@ -81,21 +144,13 @@ export default function UsuariosTabList({ items, onDelete }) {
         accessorKey: "rol",
         header: "Rol",
         size: 150,
-        Cell: ({ row }) => (
-          <Typography variant="body">
-            {row.original.rol || row.original.rol_nombre || "N/A"}
-          </Typography>
-        ),
+        Cell: UsuarioRolCell,
       },
       {
         accessorKey: "created_at",
         header: "Creación",
         size: 180,
-        Cell: ({ row }) => (
-          <Typography variant="body">
-            {row.original.created_at || "N/A"}
-          </Typography>
-        ),
+        Cell: UsuarioCreacionCell,
       },
       {
         id: "acciones",
@@ -104,61 +159,10 @@ export default function UsuariosTabList({ items, onDelete }) {
         enableColumnFilter: false,
         enableSorting: false,
         enableColumnActions: false,
-        Cell: ({ row }) => {
-          // El editor solo puede editar su propio usuario
-          const puedeEditar = role === "administrador" || 
-            (role === "editor" && user?.usuarioId && Number(user.usuarioId) === Number(row.original.id));
-          
-          return (
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
-              {puedeEditar && (
-                <IconButton
-                  color="primary"
-                  size="small"
-                  data-testid={`button-usuario-editar-${row.original.id}`}
-                  onClick={() =>
-                    navigate(`/usuarios/${row.original.id}/editar`)
-                  }
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "rgba(102, 126, 234, 0.1)",
-                    },
-                  }}
-                >
-                  <EditIcon />
-                </IconButton>
-              )}
-              {role === "administrador" && (
-                <IconButton
-                  color="error"
-                  size="small"
-                  data-testid={`button-usuario-eliminar-${row.original.id}`}
-                  onClick={() =>
-                    handleDeleteClick(
-                      row.original.id,
-                      row.original.nombre_usuario
-                    )
-                  }
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "rgba(211, 47, 47, 0.1)",
-                    },
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              )}
-              {!puedeEditar && role !== "administrador" && (
-                <Typography variant="body2" color="text.secondary">
-                  Solo lectura
-                </Typography>
-              )}
-            </Stack>
-          );
-        },
+        Cell: UsuarioAccionesCell,
       },
     ],
-    [role, user, navigate, handleDeleteClick]
+    []
   );
 
   return (
@@ -175,6 +179,7 @@ export default function UsuariosTabList({ items, onDelete }) {
       <MaterialReactTable
         columns={columns}
         data={items}
+        meta={{ role, user, navigate, handleDeleteClick }}
         enableColumnResizing={false}
         enablePagination
         enableBottomToolbar

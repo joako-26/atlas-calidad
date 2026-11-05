@@ -264,8 +264,7 @@ export default function Register() {
                     </label>
                     <Field name="comuna">
                       {({ field, form, meta }) => (
-                        <>
-                          <Autocomplete
+                        <Autocomplete
                             id="comuna"
                             options={Comunas}
                             value={field.value || null}
@@ -301,8 +300,7 @@ export default function Register() {
                                 }}
                               />
                             )}
-                          />
-                        </>
+                        />
                       )}
                     </Field>
                     <ErrorMessage
@@ -321,8 +319,7 @@ export default function Register() {
                     </label>
                     <Field name="region">
                       {({ field, form, meta }) => (
-                        <>
-                          <Autocomplete
+                        <Autocomplete
                             id="region"
                             options={regionesDeChile}
                             value={field.value || null}
@@ -354,8 +351,7 @@ export default function Register() {
                                 }}
                               />
                             )}
-                          />
-                        </>
+                        />
                       )}
                     </Field>
                     <ErrorMessage

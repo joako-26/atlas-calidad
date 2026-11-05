@@ -17,7 +17,6 @@ export function RequireAdmin({ children }) {
 export function RequireAdminOrOwnUser({ children }) {
   const { role, user } = useAuth()
   const { id } = useParams()
-  const location = useLocation()
   
   // Si es administrador, permitir acceso
   if (role === 'administrador') return children
@@ -30,5 +29,4 @@ export function RequireAdminOrOwnUser({ children }) {
   // No autorizado
   return <div>No autorizado. Solo puedes editar tu propio usuario.</div>
 }
-
 
