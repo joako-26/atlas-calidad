@@ -27,7 +27,7 @@ root
 ```
 En el archivo `.env` se definen las variables de entorno que utilizará docker al momento de crear las imágenes, por lo que puedes modificarlas en el caso de tener otros servicios corriendo en tu equipo que utilicen los mismos puertos.
 
-1. JWT_SECRET: `0d1d8132f0fde5beabb417b434ff10f1cae8635a461686b0f46ac9c2bbfbd0e8` Llave utilizada para cifrar y generar los tokens de sesión
+1. JWT_SECRET: `3f015117470806052b67fc537adad8c3682630c7f63656626d1b8bd3431a094d` Llave utilizada para cifrar y generar los tokens de sesión
 2. PORT_POSTGRES: `15433` Puerto expuesto que utilizará tu equipo para permitir acceder a la conexión a la base de datos
 3. PORT_BACKEND: `4451` Puerto expuesto que utilizará tu equipo para acceder a la API
 4. PORT_FRONTEND: `3351` Puerto expuesto que utilizará tu equipo para acceder al cliente - frontend

@@ -4,7 +4,7 @@ import { check, sleep } from "k6";
 // URL de la API: en tu PC es localhost:4451. Dentro de Docker se cambia con -e API_URL=...
 const API = __ENV.API_URL || "http://localhost:4451";
  
-// Perfiles de carga: "humo" (rápido, para el pipeline) y "carga" (prueba completa)
+// Perfiles: "humo" (rápido), "carga" (prueba completa) y "estres" (hasta 100 VUs)
 const PERFILES = {
   humo: [
     { duration: "10s", target: 5 },
@@ -14,6 +14,13 @@ const PERFILES = {
     { duration: "30s", target: 20 }, // subimos a 20 usuarios virtuales
     { duration: "1m", target: 20 },  // mantenemos la carga
     { duration: "15s", target: 0 },  // bajamos
+  ],
+  estres: [
+    { duration: "15s", target: 20 },
+    { duration: "30s", target: 50 },
+    { duration: "30s", target: 100 },
+    { duration: "1m", target: 100 },
+    { duration: "15s", target: 0 },
   ],
 };
  
