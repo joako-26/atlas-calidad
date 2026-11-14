@@ -16,7 +16,7 @@
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@mui/x-charts": "^8.18.0",
-    "axios": "^1.13.1",
+    "axios": "^1.21.1",
     "formik": "^2.4.9",
     "jwt-decode": "^4.0.0",
     "material-react-table": "^3.2.1",
