@@ -51,6 +51,13 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Atlas API escuchando en puerto ${PORT}`);
-});
+
+// Solo encendemos el servidor si este archivo se ejecuta directamente
+// (node src/app.js). Cuando lo usan las pruebas, no se enciende.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Atlas API escuchando en puerto ${PORT}`);
+  });
+}
+
+module.exports = app;
