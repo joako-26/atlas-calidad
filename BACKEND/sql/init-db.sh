@@ -5,10 +5,10 @@ echo "========================================="
 echo "Inicializando base de datos Atlas..."
 echo "========================================="
 
-# Esperar un momento para asegurar que la base de datos esté lista
+# Esperar un momento para asegurar que la base de datos estÃ© lista
 sleep 2
 
-# Procesar el dump eliminando comandos problemáticos y ejecutarlo
+# Procesar el dump eliminando comandos problemÃ¡ticos y ejecutarlo
 # Eliminamos DROP DATABASE, CREATE DATABASE, CREATE SCHEMA public y reemplazamos \connect atlas
 echo "Procesando dump-atlas.sql..."
 

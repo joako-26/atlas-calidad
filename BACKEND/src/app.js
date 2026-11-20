@@ -1,6 +1,8 @@
 const path = require("path");
 const fs = require("fs");
 const express = require("express");
+const helmet = require("helmet");
+// ...
 const cors = require("cors");
 const morgan = require("morgan");
 const swaggerUi = require("swagger-ui-express");
@@ -19,7 +21,7 @@ const empresaUsuariosRoutes = require("./routes/empresa_usuarios");
 const metricasRoutes = require("./routes/metricas");
 
 const app = express();
-
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -39,7 +41,7 @@ app.use("/empresa-usuarios", empresaUsuariosRoutes);
 app.use("/metricas", metricasRoutes);
 
 const openapi = require("./openapi.json");
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(openapi));
+app.use("/docs", (req, res, next) => { res.setHeader("Content-Security-Policy", "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data: https:;object-src 'none';script-src 'self' 'unsafe-inline';style-src 'self' https: 'unsafe-inline'"); next(); }, swaggerUi.serve, swaggerUi.setup(openapi));
 app.get("/openapi.json", (req, res) => {
   res.json(openapi);
 });
